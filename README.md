@@ -21,4 +21,7 @@ Todo:
 1. Compute the average for 10 frames to reduce the noise.
 2. set a interval time to check the certain pattern.
 
+=========================================================
+Finial demo
 
+We did emotion patterns detection and ficial gestures controls. 
