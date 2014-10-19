@@ -9,9 +9,11 @@ using namespace std;
 class ofApp : public ofBaseApp{
 public:
     vector<Expression> expressionPatterns;
-    
+     
     vector<string> patternNames;
     vector<float>  patternScale;
+    
+    map<string, int> blendShapes;
     
 public:
 	void setup();

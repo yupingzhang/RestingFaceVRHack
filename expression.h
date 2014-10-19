@@ -30,7 +30,7 @@ public:
     
     vector<vec3> baseline;  // neutual vertices
     
-    static map<string, int> blendShapes;  //52 built-in shapes and their indices
+//    static map<string, int> blendShapes;  //52 built-in shapes and their indices
     
     //vector<float>  avgWeights;   //compute the averege weight frame
 public:
@@ -50,7 +50,7 @@ public:
     void setPatternWeightThreshold(string name, float min, float max);
     
     //check if match one certain pattern
-    float xpatternDetection(vector<float> streamingWeights);
+    float xpatternDetection(vector<float> streamingWeights, map<string, int>& blendShapes);
 
     float xpatternScale(vector<vec3> streamingVertices);
     

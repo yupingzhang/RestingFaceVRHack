@@ -16,17 +16,15 @@ void ofApp::setup() {
 //        std::cout << faceShift.getBlendshapeName(j) << "\n";
 //    }
     
-    ///// init pattern ////
     vector<string> shapeNames = faceShift.getBlendshapeNames();
-    
     for(int i=0; i<shapeNames.size(); i++) {
-        Expression::blendShapes[shapeNames[i]] = i;
+        blendShapes[shapeNames[i]] = i;
     }
-    
+    ///// init pattern ////
     int patternNum = 4;
-    expressionPatterns.resize(patternNum);
-    patternNames.resize(patternNum);
-    patternScale.resize(patternNum);
+//    expressionPatterns.resize(patternNum);
+//    patternNames.resize(patternNum);
+//    patternScale.resize(patternNum);
     
     ///////////////////////////
     // create a new pattern  //
@@ -128,7 +126,7 @@ void ofApp::draw(){
     int mainPatternIndex = 0;
     float maxPattern = 0.0;
     for (int i=0; i<patternNames.size(); i++) {
-        patternScale[i] = expressionPatterns[i].xpatternDetection(faceShift.getBlendshapeWeights());
+        patternScale[i] = expressionPatterns[i].xpatternDetection(faceShift.getBlendshapeWeights(), blendShapes);
         
         if (patternScale[i] > maxPattern) {
             maxPattern = patternScale[i];
