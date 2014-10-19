@@ -153,10 +153,10 @@ void ofApp::draw(){
     //    printf("%f \n", tdelta);
     ofVec3f cheek_L = faceShift.getBlendMesh().getVertices()[5431];
     ofVec3f cheek_R = faceShift.getBlendMesh().getVertices()[1810];
-    
+    int mainPatternIndex = 0;
     ///////////////////////
     if(tdelta >= 0.001)  {
-        int mainPatternIndex = 0;
+     
         float maxPattern = 0.0;
         for (int i=0; i<patternNames.size(); i++) {
             patternScale[i] = expressionPatterns[i].xpatternDetection(faceShift.getBlendshapeWeights(), blendShapes);
@@ -187,8 +187,7 @@ void ofApp::draw(){
                 candies[i].update(tdelta, vec3(cheek_L.x, cheek_L.y, cheek_L.z), vec3(cheek_R.x, cheek_R.y, cheek_R.z), mouthopen);
                 // draw each one
                 ofPushMatrix();
-                ofRotateX(candies[i].rotate);  //in degrees
-                img.draw(candies[i].pos.x, candies[i].pos.y, candies[i].pos.z );
+                img.draw(candies[i].pos.x, candies[i].pos.y, candies[i].pos.z);
                 ofPopMatrix();
             }
         }

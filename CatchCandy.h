@@ -20,6 +20,8 @@ public:
     vec3 pos;
     float rotate; //rotate(t)  in degree
     
+    static int count;
+    
 public:
     CatchCandy(int w, int h);
     void update(float timedelta, vec3 p1, vec3 p2,  bool openMouth);  // everytime candy disappear on the buttom of the screen of catch by mouth, it starts fall from the top again
