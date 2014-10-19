@@ -10,9 +10,9 @@ void ofApp::setup() {
 	light.enable();
 	light.setPosition(+500, +500, +500);
     
-    din.loadFont("din.ttf", 100, true, true);
-    din.setLineHeight(72.0f);
-    din.setLetterSpacing(1.0);
+    helvetica.loadFont("helvetica.ttf", 100, true, true);
+    helvetica.setLineHeight(72.0f);
+    helvetica.setLetterSpacing(1.0);
     
     /////////
 //    cout << faceShift.getBlendshapeNames().size();
@@ -96,7 +96,7 @@ void ofApp::setup() {
     expressionPatterns.push_back(happyPattern);
     
     
-    //bitch resting face
+    //resting face
     v.clear();
     v.push_back(make_pair("EyeBlink_L", 0.2));
     v.push_back(make_pair("EyeBlink_R", 0.2));
@@ -280,7 +280,7 @@ void ofApp::draw(){
     
     if (ofGetFrameNum()-lastBlinkTrigger <3){
         ofSetColor(200,200,0);
-        din.drawString(patternNames[mainPatternIndex], ofGetWidth()*0.25,ofGetHeight());
+        helvetica.drawString(patternNames[mainPatternIndex], ofGetWidth()*0.25,ofGetHeight());
         
     }
     

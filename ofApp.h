@@ -56,7 +56,7 @@ public:
     smoothfloat height;
     int lastBlinkTrigger;
     
-    ofTrueTypeFont din;
+    ofTrueTypeFont helvetica;
     smoothfloat necktilt;
 
 };
