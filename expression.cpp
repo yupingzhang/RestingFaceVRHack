@@ -48,7 +48,9 @@ float Expression::xpatternDetection(vector<float> streamingWeights,  map<string,
         string shapename = shapes[i].first;
         float baseValue = shapes[i].second;
         int index = blendShapes[shapename];
-        scale += streamingWeights[index];
+        float weight = streamingWeights[index];
+        if(weight > baseValue - 0.1 )
+            scale += weight-baseValue;
     }
     
     return scale;

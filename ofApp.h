@@ -2,7 +2,10 @@
 
 #include "ofMain.h"
 #include "ofxFaceShift.h"
+
 #include "expression.h"
+#include "CatchCandy.h"
+#include "vec3.h" 
 
 using namespace std;
 
@@ -26,6 +29,15 @@ public:
     
     map<string, int> blendShapes;
     
+    float time;
+    
+    bool mouthopen;
+    bool dropCandy;
+    int candyMax;
+    ofImage img;
+    vector<CatchCandy> candies;
+    
+    
 public:
 	void setup();
 	void update();
@@ -43,6 +55,7 @@ public:
     float heightMovement;
     smoothfloat height;
     int lastBlinkTrigger;
+    
     ofTrueTypeFont din;
     smoothfloat necktilt;
 
