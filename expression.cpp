@@ -10,16 +10,12 @@
 
 using namespace std;
 
-
 void Expression::init(string patternName, vector<Shape> v) {
     pattern = make_pair(patternName, v);
     
 //    for(int i=0; i<shapeNames.size(); i++) {
 //        blendShapes[shapeNames[i]] = i;
 //    }
-    
-//    printf("%d \n", shapeNames.size());
-//    printf("%s \n", shapeNames[0].c_str());
     
 }
 
@@ -44,7 +40,7 @@ void Expression::setPatternWeightThreshold(string name, float min, float max) {
 
 //check if match one certain pattern, return the scale (pain scaling)
     
-float Expression::xpatternDetection(vector<float> streamingWeights)  {
+float Expression::xpatternDetection(vector<float> streamingWeights,  map<string, int>& blendShapes)  {
     float scale = 0;
     vector<Shape> shapes = pattern.second;
  

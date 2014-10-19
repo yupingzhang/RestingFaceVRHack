@@ -16,17 +16,15 @@ void ofApp::setup() {
 //        std::cout << faceShift.getBlendshapeName(j) << "\n";
 //    }
     
-    ///// init pattern ////
     vector<string> shapeNames = faceShift.getBlendshapeNames();
-    
     for(int i=0; i<shapeNames.size(); i++) {
-        Expression::blendShapes[shapeNames[i]] = i;
+        blendShapes[shapeNames[i]] = i;
     }
-    
+    ///// init pattern ////
     int patternNum = 4;
-    expressionPatterns.resize(patternNum);
-    patternNames.resize(patternNum);
-    patternScale.resize(patternNum);
+//    expressionPatterns.resize(patternNum);
+//    patternNames.resize(patternNum);
+//    patternScale.resize(patternNum);
     
     ///////////////////////////
     // create a new pattern  //
@@ -36,7 +34,7 @@ void ofApp::setup() {
     patternNames.push_back("digust");
     patternNames.push_back("sad");
     patternNames.push_back("happy");
-    patternNames.push_back("bitch resting");
+    patternNames.push_back("unamused");
     
     for (int k=0; k<patternNum; k++) {
          patternScale.push_back(0.0);
@@ -110,6 +108,10 @@ void ofApp::setup() {
     Expression bitchPattern;
     bitchPattern.init("bitch resting", v);
     expressionPatterns.push_back(bitchPattern);
+    
+    horizontalMovement = 0;
+    depthMovement = 0;
+    lastBlinkTrigger =0;
 
 }
 
@@ -118,17 +120,17 @@ void ofApp::update() {
 }
 
 void ofApp::draw(){
-	ofBackground(128);
+	ofBackground(0);
 	
-	cam.begin();
+	//cam.begin();
 	glEnable(GL_DEPTH_TEST);
-	ofRotateX(180);
+	//ofRotateX(180);
 
     ///////////////////////
     int mainPatternIndex = 0;
     float maxPattern = 0.0;
     for (int i=0; i<patternNames.size(); i++) {
-        patternScale[i] = expressionPatterns[i].xpatternDetection(faceShift.getBlendshapeWeights());
+        patternScale[i] = expressionPatterns[i].xpatternDetection(faceShift.getBlendshapeWeights(), blendShapes);
         
         if (patternScale[i] > maxPattern) {
             maxPattern = patternScale[i];
@@ -144,19 +146,86 @@ void ofApp::draw(){
     
     /////////////////////////////////////////
     
-	ofTranslate(faceShift.getPosition());
-	ofScale(-1, 1, 1); // for some reason the rotation matrix x is flipped
-	glMultMatrixf((GLfloat*) faceShift.getRotationMatrix().getPtr());
-	ofScale(-1, 1, 1); // then we flip it back
-	
-	ofEnableLighting();
+    
+    ofPushMatrix();
+    ofTranslate(ofGetWidth()/2.+horizontalMovement,ofGetHeight()/2. + height.get(), depthMovement);
+    ofEnableLighting();
 	ofSetColor(255);
+    ofRotateZ(180);
 	faceShift.getBlendMesh().draw();
 	
 	ofDisableLighting();
-	ofSetColor(0);
-	faceShift.getBlendMesh().drawWireframe();
-	
-	cam.end();
+	ofSetColor(120);
     
+	faceShift.getBlendMesh().drawWireframe();
+    glDisable(GL_DEPTH_TEST);
+    ofNoFill();
+    //ofCircle(faceShift.getBlendMesh().getVertices()[(int)pointone], 5);
+    ofSetColor(30);
+    ofLine(faceShift.getBlendMesh().getVertices()[5431], faceShift.getNeutralMesh().getVertices()[5431]);
+    ofLine(faceShift.getBlendMesh().getVertices()[1810], faceShift.getNeutralMesh().getVertices()[1810]);
+    ofDisableLighting();
+    
+    
+    float cheek1 = ofDist(faceShift.getBlendMesh().getVertices()[5431].x,faceShift.getBlendMesh().getVertices()[5431].y,
+                          faceShift.getNeutralMesh().getVertices()[5431].x,faceShift.getNeutralMesh().getVertices()[5431].y);
+    ofPopMatrix();
+    float cheek2 = ofDist(faceShift.getBlendMesh().getVertices()[1810].x,faceShift.getBlendMesh().getVertices()[1810].y,
+                          faceShift.getNeutralMesh().getVertices()[1810].x,faceShift.getNeutralMesh().getVertices()[1810].y);
+    ofPopMatrix();
+	//cam.end();
+    cheek.set(cheek1);
+    cheekb.set(cheek2);
+    if (cheek1>2.5){
+        //cout<<cheek.get() <<endl;
+        horizontalMovement += (cheek.get()-1.5);
+    }
+    if (cheek2>2.5){
+        //cout<<cheekb.get() <<endl;
+        horizontalMovement -= (cheekb.get()-1.5);
+    }
+    
+    if ((faceShift.getBlendshapeWeights()[0] >= 0.9) && (faceShift.getBlendshapeWeights()[1] >= 0.9)){
+        if (ofGetFrameNum()-20 > lastBlinkTrigger) {
+            lastBlinkTrigger = ofGetFrameNum();
+            cout << "blink" << endl;
+        }
+    }
+    float xcenter = ofGetWidth()/2;
+    
+    //jaw-movement for forward/back
+    if (faceShift.getBlendshapeWeights()[23] < 0.5) depthMovement -= (0.1 - faceShift.getBlendshapeWeights()[23]) *5;
+    if (faceShift.getBlendshapeWeights()[23] > 0.5) depthMovement += (faceShift.getBlendshapeWeights()[23] * .3);
+    //upper lip compression for up down.
+    if (faceShift.getBlendshapeWeights()[28] < 0.15) heightMovement -= (0.1 - faceShift.getBlendshapeWeights()[23]) *5;
+    if (faceShift.getBlendshapeWeights()[28] > 0.15) heightMovement += faceShift.getBlendshapeWeights()[23] * .5;
+    height.set(heightMovement);
+    
+    if (faceShift.getBlendshapeWeights().size()!=0){
+        for (int i = 0; i<faceShift.getBlendshapeNames().size(); i++) {
+            ofSetColor(0);
+            ofRect(10, 20*i, faceShift.getBlendshapeWeights()[i]*300, 10);
+            ofSetColor(255);
+            ofDrawBitmapString(faceShift.getBlendshapeNames()[i], ofPoint(10,10+ (20*i)));
+        }
+    }
+
+    
+}
+
+smoothfloat::smoothfloat(){
+    for(int i=0; i<20;i++){
+        ringbuffer.push_back(0);
+    }
+}
+void smoothfloat::set(float tosmooth){
+    ringbuffer.erase(ringbuffer.begin());
+    ringbuffer.push_back(tosmooth);
+}
+float smoothfloat::get(){
+    float accum=0;
+    for (int i=0; i<ringbuffer.size(); i++){
+        accum+=ringbuffer[i];
+    }
+    return (accum/ringbuffer.size());
 }
