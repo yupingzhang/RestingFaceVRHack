@@ -43,6 +43,8 @@ public:
     float heightMovement;
     smoothfloat height;
     int lastBlinkTrigger;
+    ofTrueTypeFont din;
+    smoothfloat necktilt;
 
 };
 

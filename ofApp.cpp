@@ -10,6 +10,10 @@ void ofApp::setup() {
 	light.enable();
 	light.setPosition(+500, +500, +500);
     
+    
+    din.loadFont("din.ttf", 200, true, true);
+    din.setLineHeight(72.0f);
+    din.setLetterSpacing(1.0);
     /////////
 //    cout << faceShift.getBlendshapeNames().size();
 //    for(int j=0; j<faceShift.getBlendshapeNames().size(); j++) {
@@ -121,6 +125,7 @@ void ofApp::update() {
 
 void ofApp::draw(){
 	ofBackground(0);
+    
 	
 	//cam.begin();
 	glEnable(GL_DEPTH_TEST);
@@ -145,6 +150,7 @@ void ofApp::draw(){
     //    add code to render the measurement
     
     /////////////////////////////////////////
+   
     
     
     ofPushMatrix();
@@ -152,12 +158,17 @@ void ofApp::draw(){
     ofEnableLighting();
 	ofSetColor(255);
     ofRotateZ(180);
+    
+    if(faceShift.getBlendshapeWeights()[26] > 0.25) {
+            necktilt.set(faceShift.getBlendshapeWeights()[26]);
+    }else{necktilt.set(0);}
+    ofRotateX(-180*necktilt.get());
 	faceShift.getBlendMesh().draw();
 	
 	ofDisableLighting();
 	ofSetColor(120);
     
-	faceShift.getBlendMesh().drawWireframe();
+	//faceShift.getBlendMesh().drawWireframe();
     glDisable(GL_DEPTH_TEST);
     ofNoFill();
     //ofCircle(faceShift.getBlendMesh().getVertices()[(int)pointone], 5);
@@ -187,34 +198,49 @@ void ofApp::draw(){
     
     if ((faceShift.getBlendshapeWeights()[0] >= 0.9) && (faceShift.getBlendshapeWeights()[1] >= 0.9)){
         if (ofGetFrameNum()-20 > lastBlinkTrigger) {
+            
             lastBlinkTrigger = ofGetFrameNum();
+            //ofPushMatrix();
+            ofSetColor(100);
+            //ofScale(4, 4);
+            
             cout << "blink" << endl;
+            //ofPopMatrix();
         }
+        
     }
+    ofSetColor(255);
+
+    
     float xcenter = ofGetWidth()/2;
     
     //jaw-movement for forward/back
     if (faceShift.getBlendshapeWeights()[23] < 0.5) depthMovement -= (0.1 - faceShift.getBlendshapeWeights()[23]) *5;
     if (faceShift.getBlendshapeWeights()[23] > 0.5) depthMovement += (faceShift.getBlendshapeWeights()[23] * .3);
     //upper lip compression for up down.
-    if (faceShift.getBlendshapeWeights()[28] < 0.15) heightMovement -= (0.1 - faceShift.getBlendshapeWeights()[23]) *5;
-    if (faceShift.getBlendshapeWeights()[28] > 0.15) heightMovement += faceShift.getBlendshapeWeights()[23] * .5;
+    if (faceShift.getBlendshapeWeights()[19] < 0.15) heightMovement -= (0.1 - faceShift.getBlendshapeWeights()[19]) ;
+    if (faceShift.getBlendshapeWeights()[36] > 0.15) heightMovement += faceShift.getBlendshapeWeights()[36]*.5 ;
     height.set(heightMovement);
     
     if (faceShift.getBlendshapeWeights().size()!=0){
         for (int i = 0; i<faceShift.getBlendshapeNames().size(); i++) {
-            ofSetColor(0);
+            ofSetColor(180,0,0);
             ofRect(10, 20*i, faceShift.getBlendshapeWeights()[i]*300, 10);
-            ofSetColor(255);
-            ofDrawBitmapString(faceShift.getBlendshapeNames()[i], ofPoint(10,10+ (20*i)));
+            ofSetColor(0);
+            //ofDrawBitmapString(faceShift.getBlendshapeNames()[i], ofPoint(10,10+ (20*i)));
         }
+    }
+    if (ofGetFrameNum()-lastBlinkTrigger <30){
+        ofSetColor(60,0,0);
+        din.drawString(patternNames[mainPatternIndex], ofGetWidth()*0.25,ofGetHeight());
+
     }
 
     
 }
 
 smoothfloat::smoothfloat(){
-    for(int i=0; i<20;i++){
+    for(int i=0; i<5;i++){
         ringbuffer.push_back(0);
     }
 }
