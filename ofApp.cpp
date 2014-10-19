@@ -10,7 +10,7 @@ void ofApp::setup() {
 	light.enable();
 	light.setPosition(+500, +500, +500);
     
-    din.loadFont("din.ttf", 200, true, true);
+    din.loadFont("din.ttf", 100, true, true);
     din.setLineHeight(72.0f);
     din.setLetterSpacing(1.0);
     
@@ -155,8 +155,8 @@ void ofApp::draw(){
     ofVec3f cheek_R = faceShift.getBlendMesh().getVertices()[1810];
     int mainPatternIndex = 0;
     ///////////////////////
-    if(tdelta >= 0.001)  {
-     
+    if(tdelta >= 0.01)  {
+        
         float maxPattern = 0.0;
         for (int i=0; i<patternNames.size(); i++) {
             patternScale[i] = expressionPatterns[i].xpatternDetection(faceShift.getBlendshapeWeights(), blendShapes);
@@ -168,7 +168,7 @@ void ofApp::draw(){
         }
         
         string str = "You have a " + patternNames[mainPatternIndex] + " face!!!";
-        cout << str << endl;
+        //cout << str << endl;
         if (patternScale[4] > 0.2) {
             mouthopen = true;
         }
@@ -177,7 +177,7 @@ void ofApp::draw(){
         int w = ofGetWidth();
         int h = ofGetHeight();
         ofEnableLighting();
-        
+        ofSetColor(255);
         if(dropCandy) {
             if(candies.size() < candyMax) {
                 candies.push_back(CatchCandy(w, h));
@@ -186,11 +186,18 @@ void ofApp::draw(){
                 
                 candies[i].update(tdelta, vec3(cheek_L.x, cheek_L.y, cheek_L.z), vec3(cheek_R.x, cheek_R.y, cheek_R.z), mouthopen);
                 // draw each one
-                ofPushMatrix();
-                img.draw(candies[i].pos.x, candies[i].pos.y, candies[i].pos.z);
-                ofPopMatrix();
+//                ofPushMatrix();
+//                ofRotateX(candies[i].rotate);  //in degrees
+//                img.draw(candies[i].pos.x, candies[i].pos.y ); //candies[i].pos.z
+//                ofPopMatrix();
             }
         }
+        for (int i=0; i<candies.size(); i++) {
+            ofPushMatrix();
+            img.draw(candies[i].pos.x, candies[i].pos.y, -0.1 ); //candies[i].pos.z
+            ofPopMatrix();
+        }
+
         ofDisableLighting();
         
         time = newtime;
@@ -202,7 +209,7 @@ void ofApp::draw(){
 
     
     ofPushMatrix();
-    ofTranslate(ofGetWidth()/2.+horizontalMovement,ofGetHeight()/2. + height.get(), depthMovement);
+    ofTranslate(ofGetWidth()/2.+horizontalMovement,ofGetHeight()/2. + height.get(), 10+depthMovement);
     ofEnableLighting();
 	ofSetColor(255);
     ofRotateZ(180);
@@ -210,13 +217,13 @@ void ofApp::draw(){
     if(faceShift.getBlendshapeWeights()[26] > 0.25) {
         necktilt.set(faceShift.getBlendshapeWeights()[26]);
     }else{necktilt.set(0);}
-    ofRotateX(-180*necktilt.get());
+    ofRotateX(-90*necktilt.get());
 	faceShift.getBlendMesh().draw();
 	
 	ofDisableLighting();
 	ofSetColor(120);
     
-	faceShift.getBlendMesh().drawWireframe();
+	//faceShift.getBlendMesh().drawWireframe();
     glDisable(GL_DEPTH_TEST);
     ofNoFill();
     //ofCircle(faceShift.getBlendMesh().getVertices()[(int)pointone], 5);
@@ -255,24 +262,24 @@ void ofApp::draw(){
     float xcenter = ofGetWidth()/2;
     
     //jaw-movement for forward/back
-    if (faceShift.getBlendshapeWeights()[19] < 0.5) depthMovement -= (0.1 - faceShift.getBlendshapeWeights()[19]) *5;
-    if (faceShift.getBlendshapeWeights()[28] > 0.5) depthMovement += (faceShift.getBlendshapeWeights()[28] * .3);
+    if (faceShift.getBlendshapeWeights()[23] < 0.25) depthMovement -= (0.25 - faceShift.getBlendshapeWeights()[23]) *3; //back
+    if (faceShift.getBlendshapeWeights()[23] > 0.25) depthMovement += (faceShift.getBlendshapeWeights()[23] *2 ); //forward
     //upper lip compression for up down.
-    if (faceShift.getBlendshapeWeights()[28] < 0.15) heightMovement -= (0.1 - faceShift.getBlendshapeWeights()[23]) *5;
-    if (faceShift.getBlendshapeWeights()[28] > 0.15) heightMovement += faceShift.getBlendshapeWeights()[23] * .5;
+    if (faceShift.getBlendshapeWeights()[28] < 0.15) heightMovement -= (0.15 - faceShift.getBlendshapeWeights()[28]*10) ; //up
+    if (faceShift.getBlendshapeWeights()[28] > 0.15) heightMovement += faceShift.getBlendshapeWeights()[28]*10 ; //down
     height.set(heightMovement);
     
     if (faceShift.getBlendshapeWeights().size()!=0){
         for (int i = 0; i<faceShift.getBlendshapeNames().size(); i++) {
-            ofSetColor(0);
+            ofSetColor(180,0,0);
             ofRect(10, 20*i, faceShift.getBlendshapeWeights()[i]*300, 10);
-            ofSetColor(255);
-            ofDrawBitmapString(faceShift.getBlendshapeNames()[i], ofPoint(10,10+(20*i)));
+            ofSetColor(180);
+            ofDrawBitmapString(faceShift.getBlendshapeNames()[i], ofPoint(10,10+ (20*i)));
         }
     }
     
-    if (ofGetFrameNum()-lastBlinkTrigger <30){
-        ofSetColor(60,0,0);
+    if (ofGetFrameNum()-lastBlinkTrigger <3){
+        ofSetColor(200,200,0);
         din.drawString(patternNames[mainPatternIndex], ofGetWidth()*0.25,ofGetHeight());
         
     }

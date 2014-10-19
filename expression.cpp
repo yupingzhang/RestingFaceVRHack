@@ -24,7 +24,7 @@ void Expression::createBaseline(vector<vec3> vertices) {
     // from neutralMesh.getVertices()
     baseline.resize(7366);
     int n = vertices.size();
-//    baseline(&vertices[0]);      //? for
+
     
 }
 
