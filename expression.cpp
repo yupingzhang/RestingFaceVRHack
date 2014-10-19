@@ -11,22 +11,12 @@
 using namespace std;
 
 
-void Expression::init(string patternName, vector<string> shapeNames) {
-    
-    //defalut pattern
-    vector<Shape> v;
-    v.push_back(make_pair(string("MouthFrown_L"), 0.5));
-    v.push_back(make_pair(string("MouthFrown_L"), 0.5));
-    v.push_back(make_pair(string("Sneer_L"), 0.5));
-    v.push_back(make_pair(string("Sneer_R"), 0.5));
-    v.push_back(make_pair(string("CheekSquint_L"), 0.5));
-    v.push_back(make_pair(string("CheekSquint_R"), 0.5));
-    
+void Expression::init(string patternName, vector<Shape> v) {
     pattern = make_pair(patternName, v);
     
-    for(int i=0; i<shapeNames.size(); i++) {
-        blendShapes[shapeNames[i]] = i;
-    }
+//    for(int i=0; i<shapeNames.size(); i++) {
+//        blendShapes[shapeNames[i]] = i;
+//    }
     
 //    printf("%d \n", shapeNames.size());
 //    printf("%s \n", shapeNames[0].c_str());
@@ -88,6 +78,7 @@ float Expression::xpatternScale(vector<vec3> streamingVertices) {
 
 //symmetricalAnalysis
 vector<string> Expression::symmetricalAnalysis() {
+    
 }
 
 

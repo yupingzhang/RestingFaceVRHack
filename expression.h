@@ -30,14 +30,14 @@ public:
     
     vector<vec3> baseline;  // neutual vertices
     
-    map<string, int> blendShapes;  //52 built-in shapes and their indices
+    static map<string, int> blendShapes;  //52 built-in shapes and their indices
     
     //vector<float>  avgWeights;   //compute the averege weight frame
 public:
 
     Expression() {};
     
-    void init(string patternName, vector<string> shapeNames); // load pattern
+    void init(string patternName, vector<Shape> v); // load pattern
     
     // using neatral as baseline for numerical measurement
     void createBaseline(vector<vec3> vertices);
